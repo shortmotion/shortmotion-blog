@@ -1,0 +1,168 @@
+---
+import { SEO } from 'astro-seo';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  article?: boolean;
+  publishDate?: string;
+}
+
+const { title, description, ogImage = '/og-default.jpg', article = false, publishDate } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <SEO
+    title={`${title} | Shortmotion Blog`}
+    description={description}
+    canonical={canonicalURL.href}
+    openGraph={{
+      basic: {
+        title: title,
+        type: article ? 'article' : 'website',
+        image: ogImage,
+      },
+      optional: {
+        description: description,
+        locale: 'fr_FR',
+        siteName: 'Shortmotion Blog',
+      },
+      article: article ? {
+        publishedTime: publishDate,
+        authors: ['Shortmotion'],
+        tags: ['vidéo', 'montage', 'B2B', 'réseaux sociaux'],
+      } : undefined,
+    }}
+    twitter={{
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      image: ogImage,
+    }}
+  />
+  {article && (
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": title,
+      "description": description,
+      "datePublished": publishDate,
+      "author": {
+        "@type": "Organization",
+        "name": "Shortmotion",
+        "url": "https://www.shortmotion.fr"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Shortmotion",
+        "url": "https://www.shortmotion.fr"
+      }
+    })} />
+  )}
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">Short<span>motion</span> Blog</a>
+      <a href="https://www.shortmotion.fr" class="nav-cta" target="_blank">
+        Tester Shortmotion →
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p>© {new Date().getFullYear()} Shortmotion — Montage vidéo pro, livré en 48h.</p>
+      <a href="https://www.shortmotion.fr" target="_blank">www.shortmotion.fr</a>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .nav-cta {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: #111111;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover {
+    background: #333333;
+    color: #ffffff;
+  }
+
+  main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - 160px);
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+  }
+
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 640px) {
+    .footer-inner {
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: center;
+    }
+  }
+</style>

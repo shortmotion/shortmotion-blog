@@ -1,0 +1,208 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    date: string;
+    category: string;
+    readTime: string;
+    ogImage?: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  article={true}
+  publishDate={frontmatter.date}
+  ogImage={frontmatter.ogImage}
+>
+  <article>
+    <header>
+      <div class="meta">
+        <span class="category">{frontmatter.category}</span>
+        <span class="separator">·</span>
+        <time datetime={frontmatter.date}>
+          {new Date(frontmatter.date).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+        <span class="separator">·</span>
+        <span>{frontmatter.readTime}</span>
+      </div>
+      <h1>{frontmatter.title}</h1>
+    </header>
+
+    <div class="content">
+      <slot />
+    </div>
+
+    <div class="cta-box">
+      <h3>Besoin de montage vidéo pro ?</h3>
+      <p>Vidéos courtes montées par des pros, livrées en 48h, à partir de 45€.</p>
+      <a href="https://www.shortmotion.fr" target="_blank" class="cta-button">
+        Tester Shortmotion gratuitement →
+      </a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  article {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  header {
+    margin-bottom: 3rem;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .category {
+    background: #f3f4f6;
+    color: #111111;
+    padding: 0.2rem 0.75rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+
+  .content {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+
+  .content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 2.5rem 0 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+  }
+
+  .content :global(p) {
+    margin-bottom: 1.25rem;
+    color: #374151;
+  }
+
+  .content :global(strong) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .content :global(ul), .content :global(ol) {
+    margin: 1rem 0 1.5rem 1.5rem;
+    color: #374151;
+  }
+
+  .content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9375rem;
+  }
+
+  .content :global(th) {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    font-weight: 600;
+    color: #111111;
+  }
+
+  .content :global(td) {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    color: #374151;
+  }
+
+  .content :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .cta-box {
+    margin-top: 4rem;
+    padding: 2.5rem;
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .cta-box h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .cta-box p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-button {
+    display: inline-block;
+    background: #111111;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.875rem 2rem;
+    border-radius: 100px;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .cta-button:hover {
+    background: #333333;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 640px) {
+    article {
+      padding: 1rem 0 3rem;
+    }
+
+    .cta-box {
+      padding: 1.5rem;
+    }
+  }
+</style>
