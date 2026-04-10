@@ -4,7 +4,8 @@ import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 
 export default defineConfig({
-  site: 'https://blog.shortmotion.fr',
+  site: 'https://shortmotion.fr',
+  base: '/blog',
   integrations: [sitemap(), mdx()],
   markdown: {
     shikiConfig: {
