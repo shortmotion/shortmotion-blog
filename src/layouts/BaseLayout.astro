@@ -112,13 +112,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
   .logo {
     text-decoration: none;
-    display: flex;
-    align-items: center;
+    display: block;
+    height: 30px;
+    width: 200px;
+    overflow: hidden;
   }
 
   .logo img {
-    height: 24px;
-    width: auto;
+    width: 200px;
+    height: auto;
+    margin-top: -43%;
   }
 
   .nav-cta {
