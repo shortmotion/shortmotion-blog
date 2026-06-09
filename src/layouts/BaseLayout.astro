@@ -10,8 +10,11 @@ interface Props {
   publishDate?: string;
 }
 
-const { title, description, ogImage = '/og-default.jpg', article = false, publishDate } = Astro.props;
+const { title, description, ogImage = '/logo.png', article = false, publishDate } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// Open Graph / Twitter images must be ABSOLUTE URLs. Handles both relative
+// site assets (/logo.png) and already-absolute article covers (Unsplash).
+const ogImageURL = new URL(ogImage, Astro.site).href;
 ---
 
 <!DOCTYPE html>
@@ -28,7 +31,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       basic: {
         title: title,
         type: article ? 'article' : 'website',
-        image: ogImage,
+        image: ogImageURL,
       },
       optional: {
         description: description,
@@ -45,7 +48,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       card: 'summary_large_image',
       title: title,
       description: description,
-      image: ogImage,
+      image: ogImageURL,
     }}
   />
   {article && (

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { ARTICLES } from '../articles-list';
 
 interface Props {
   frontmatter: {
@@ -8,11 +9,22 @@ interface Props {
     date: string;
     category: string;
     readTime: string;
+    image?: string;
     ogImage?: string;
   };
 }
 
 const { frontmatter } = Astro.props;
+
+// Internal linking: every article links to 6 others (rotating window so the
+// whole blog is densely interlinked → crawl paths + authority). Static list
+// avoids a circular import (the layout can't glob the pages that use it).
+const currentSlug = Astro.url.pathname.replace(/\//g, '');
+const idx = ARTICLES.findIndex((a) => a.slug === currentSlug);
+const start = idx < 0 ? 0 : idx;
+const moreArticles = Array.from({ length: Math.min(6, ARTICLES.length - 1) }, (_, i) =>
+  ARTICLES[(start + 1 + i) % ARTICLES.length],
+).filter((a) => a.slug !== currentSlug);
 ---
 
 <BaseLayout
@@ -20,7 +32,7 @@ const { frontmatter } = Astro.props;
   description={frontmatter.description}
   article={true}
   publishDate={frontmatter.date}
-  ogImage={frontmatter.ogImage}
+  ogImage={frontmatter.ogImage ?? frontmatter.image}
 >
   <article>
     <header>
@@ -51,6 +63,16 @@ const { frontmatter } = Astro.props;
         Tester Shortmotion gratuitement →
       </a>
     </div>
+
+    <nav class="more-articles" aria-label="Autres articles">
+      <h2>Continuez votre lecture</h2>
+      <ul>
+        {moreArticles.map((a) => (
+          <li><a href={`/${a.slug}/`}>{a.title}</a></li>
+        ))}
+      </ul>
+      <a href="/" class="all-link">← Tous les articles du blog</a>
+    </nav>
   </article>
 </BaseLayout>
 
@@ -194,6 +216,37 @@ const { frontmatter } = Astro.props;
     background: #333333;
     color: #ffffff;
     transform: translateY(-1px);
+  }
+
+  .more-articles {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .more-articles h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .more-articles ul {
+    list-style: none;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .more-articles ul a {
+    color: #111111;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .more-articles ul a:hover {
+    text-decoration: underline;
+  }
+  .more-articles .all-link {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+    text-decoration: none;
   }
 
   @media (max-width: 640px) {
